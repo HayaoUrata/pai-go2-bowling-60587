@@ -47,26 +47,29 @@ def ease(a,b,u):
 
 
 @torch.inference_mode()
-def play(env,network,name,mass,aim_y,swing_time,ball_y=0.0,fps=25,wide=False,side=False,stage="complete",recovery=None,handover=2.81,save_states=False,recovery_name=None,dual_view=False):
+def play(env,network,name,mass,aim_y,swing_time,ball_y=0.0,fps=25,wide=False,side=False,stage="complete",recovery=None,handover=2.81,save_states=False,recovery_name=None,dual_view=False,ball_x=.85,detector=None,record=True,hold_extra=0.0):
     env.scene.reset();obs=env.reset()
-    env.ball.set_pos(torch.tensor([[0.85,ball_y,0.14]],device=gs.device))
+    env.ball.set_pos(torch.tensor([[ball_x,ball_y,0.14]],device=gs.device))
     env.ball.set_mass(mass)
+    # In vision mode the controller gets only this RGB-D estimate, never true ball coordinates.
+    detection=detector.detect(name) if detector is not None else None
+    estimated_ball=np.asarray(detection["position"],dtype=np.float32) if detection is not None else None
     knocked=np.zeros(6,dtype=bool);samples=[];recovery_states=[]
     settle_start=None;kick_start=None;foot_start=None;ball_start=None;approach_failed=False
     phases=[];kick_peak_speed=0.0;stiff=False;support=None;support_base=None;support_rotation=None
     calf=env.robot.get_link("FR_calf")
     out=ROOT/"videos"/f"kick_{name}.mp4"
     with ExitStack() as stack:
-        writer=stack.enter_context(imageio.get_writer(str(out),fps=fps,codec="libx264",quality=8,macro_block_size=1))
-        side_out=out.with_name(out.stem.removesuffix("_wide")+"_side.mp4") if dual_view else None
-        side_writer=stack.enter_context(imageio.get_writer(str(side_out),fps=fps,codec="libx264",quality=8,macro_block_size=1)) if dual_view else None
+        writer=stack.enter_context(imageio.get_writer(str(out),fps=fps,codec="libx264",quality=8,macro_block_size=1)) if record else None
+        side_out=out.with_name(out.stem.removesuffix("_wide")+"_side.mp4") if dual_view and record else None
+        side_writer=stack.enter_context(imageio.get_writer(str(side_out),fps=fps,codec="libx264",quality=8,macro_block_size=1)) if dual_view and record else None
         for step in range(800):
             t=step*0.02
             pos=env.robot.get_pos()[0].cpu().numpy()
             quat=env.robot.get_quat()[0].cpu().numpy()
-            ball=env.ball.get_pos()[0].cpu().numpy()
+            ball=estimated_ball if estimated_ball is not None else env.ball.get_pos()[0].cpu().numpy()
             yaw=np.arctan2(rotation(quat)[1,0],rotation(quat)[0,0])
-            target=np.array([0.42,ball_y+0.142])
+            target=estimated_ball[:2]+np.array([-.43,.142]) if estimated_ball is not None else np.array([0.42,ball_y+0.142])
             error=target-pos[:2]
             if settle_start is None and not approach_failed:
                 phase="接近"
@@ -120,25 +123,25 @@ def play(env,network,name,mass,aim_y,swing_time,ball_y=0.0,fps=25,wide=False,sid
                 load=ball_start.copy();load[:2]-=0.34*direction;load[2]=0.14
                 follow=ball_start.copy();follow[:2]-=0.005*direction;follow[2]=0.14
                 shift=np.array([-.060,.120,-.015])
-                total=2.65+swing_time
+                total=2.65+swing_time+hold_extra
                 if dt<.65:
                     desired_base=ease(support_base,support_base+shift,dt/.65)
-                elif dt<1.55+swing_time:
+                elif dt<1.55+hold_extra+swing_time:
                     desired_base=support_base+shift
                 else:
-                    desired_base=ease(support_base+shift,support_base,(dt-1.55-swing_time)/.90)
+                    desired_base=ease(support_base+shift,support_base,(dt-1.55-hold_extra-swing_time)/.90)
                 if dt<.65:
                     foot=foot_start;phase="体重を移す"
                 elif dt<.87:
                     foot=ease(foot_start,load,(dt-.65)/.22);phase="構える"
-                elif dt<.91:
+                elif dt<.91+hold_extra:
                     foot=load;phase="構える"
-                elif dt<.91+swing_time:
-                    foot=ease(load,follow,(dt-.91)/swing_time);phase="キック"
-                elif dt<.97+swing_time:
+                elif dt<.91+hold_extra+swing_time:
+                    foot=ease(load,follow,(dt-.91-hold_extra)/swing_time);phase="キック"
+                elif dt<.97+hold_extra+swing_time:
                     foot=follow;phase="キック"
-                elif dt<1.32+swing_time:
-                    foot=ease(follow,foot_start,(dt-.97-swing_time)/.35);phase="足を戻す"
+                elif dt<1.32+hold_extra+swing_time:
+                    foot=ease(follow,foot_start,(dt-.97-hold_extra-swing_time)/.35);phase="足を戻す"
                 elif dt<total:
                     foot=foot_start;phase="姿勢を戻す"
                 else:
@@ -181,32 +184,34 @@ def play(env,network,name,mass,aim_y,swing_time,ball_y=0.0,fps=25,wide=False,sid
                 angle=float(np.degrees(np.arccos(np.clip(1-2*(q[1]**2+q[2]**2),-1,1))))
                 knocked[i]=angle>45
                 pin_angles.append(angle)
-            if side:
-                env.camera.set_pose(up=(0,0,1),pos=(.45,-1.85,.85),lookat=(.45,0,.14))
-            elif wide:
-                env.camera.set_pose(up=(0,0,1),pos=(1.8,-4.4,2.8),lookat=(1.25,0,0.15))
-            elif ball[0]>2.4 and kick_start is not None:
-                env.camera.set_pose(up=(0,0,1),pos=(3.9,-1.9,1.30),lookat=(3.2,0,0.12))
-            elif phase in ["構える","キック","足を戻す"] and ball[0]<1.60:
-                env.camera.set_pose(up=(0,0,1),pos=pos+np.array([.9,-1.3,.75]),lookat=pos+np.array([.3,-.05,-.1]))
-            else:
-                env.camera.set_pose(up=(0,0,1),pos=(2.05,-3.4,2.30),lookat=(1.25,0,0.12))
-            frame=np.asarray(env.camera.render()[0]).copy()
-            if frame.ndim==4:frame=frame[0]
-            im=Image.fromarray(frame);d=ImageDraw.Draw(im)
-            d.rectangle((0,0,960,46),fill=(14,24,35));d.text((18,7),"4脚ロボのキック・ボウリング",font=font(27),fill=(239,245,249))
-            d.text((755,7),"等速再生",font=font(23),fill=(176,199,216))
-            d.rectangle((0,490,960,540),fill=(14,24,35));d.text((18,497),phase,font=font(25),fill=(176,199,216))
-            score=int(knocked.sum());d.text((610 if score==6 else 710,493),f"STRIKE! 6 / 6" if score==6 else f"{score} / 6 本",font=font(32),fill=(68,208,165))
-            writer.append_data(np.asarray(im))
-            if side_writer is not None:
-                env.camera.set_pose(up=(0,0,1),pos=(.45,-1.85,.85),lookat=(.45,0,.14))
-                side_frame=np.asarray(env.camera.render()[0]).copy()
-                if side_frame.ndim==4:side_frame=side_frame[0]
-                side_image=Image.fromarray(side_frame)
-                side_image.paste(im.crop((0,0,960,46)),(0,0))
-                side_image.paste(im.crop((0,490,960,540)),(0,490))
-                side_writer.append_data(np.asarray(side_image))
+            score=int(knocked.sum())
+            if record:
+                if side:
+                    env.camera.set_pose(up=(0,0,1),pos=(.45,-1.85,.85),lookat=(.45,0,.14))
+                elif wide:
+                    env.camera.set_pose(up=(0,0,1),pos=(1.8,-4.4,2.8),lookat=(1.25,0,0.15))
+                elif ball[0]>2.4 and kick_start is not None:
+                    env.camera.set_pose(up=(0,0,1),pos=(3.9,-1.9,1.30),lookat=(3.2,0,0.12))
+                elif phase in ["構える","キック","足を戻す"] and ball[0]<1.60:
+                    env.camera.set_pose(up=(0,0,1),pos=pos+np.array([.9,-1.3,.75]),lookat=pos+np.array([.3,-.05,-.1]))
+                else:
+                    env.camera.set_pose(up=(0,0,1),pos=(2.05,-3.4,2.30),lookat=(1.25,0,0.12))
+                frame=np.asarray(env.camera.render()[0]).copy()
+                if frame.ndim==4:frame=frame[0]
+                im=Image.fromarray(frame);d=ImageDraw.Draw(im)
+                d.rectangle((0,0,960,46),fill=(14,24,35));d.text((18,7),"4脚ロボのキック・ボウリング",font=font(27),fill=(239,245,249))
+                d.text((755,7),"等速再生",font=font(23),fill=(176,199,216))
+                d.rectangle((0,490,960,540),fill=(14,24,35));d.text((18,497),phase,font=font(25),fill=(176,199,216))
+                score=int(knocked.sum());d.text((610 if score==6 else 710,493),f"STRIKE! 6 / 6" if score==6 else f"{score} / 6 本",font=font(32),fill=(68,208,165))
+                writer.append_data(np.asarray(im))
+                if side_writer is not None:
+                    env.camera.set_pose(up=(0,0,1),pos=(.45,-1.85,.85),lookat=(.45,0,.14))
+                    side_frame=np.asarray(env.camera.render()[0]).copy()
+                    if side_frame.ndim==4:side_frame=side_frame[0]
+                    side_image=Image.fromarray(side_frame)
+                    side_image.paste(im.crop((0,0,960,46)),(0,0))
+                    side_image.paste(im.crop((0,490,960,540)),(0,490))
+                    side_writer.append_data(np.asarray(side_image))
             tilt=float(env.base_euler[0,:2].abs().max().item())
             foot_actual=calf.get_pos()[0].cpu().numpy()+rotation(calf.get_quat()[0].cpu().numpy())@np.array([0,0,-.213])
             samples.append(dict(t=t,phase=phase,robot=pos.tolist(),ball=ball.tolist(),foot=foot_actual.tolist(),
@@ -228,11 +233,17 @@ def play(env,network,name,mass,aim_y,swing_time,ball_y=0.0,fps=25,wide=False,sid
     if save_states:
         (ROOT/"results/kick_recovery_states.json").write_text(json.dumps(recovery_states,indent=2))
     result["source_episode"]=name
+    result["hold_extra_s"]=hold_extra
+    result["ball_x"]=ball_x
+    result["vision_detection"]=detection
+    result["video_recorded"]=record
+    if detection is not None:
+        result["detection_error_xy_m"]=float(np.linalg.norm(estimated_ball[:2]-np.array([ball_x,ball_y])))
     out.with_suffix(".json").write_text(json.dumps(result,indent=2))
     if side_out is not None:
         side_result=dict(result,name=side_out.stem.removeprefix("kick_"),camera="side")
         side_out.with_suffix(".json").write_text(json.dumps(side_result,indent=2))
-    print("KICK_VIDEO_SAVED",out.name,"score",result["score"],"peak_ball_vx",kick_peak_speed,flush=True)
+    print("KICK_VIDEO_SAVED" if record else "KICK_EVALUATION_SAVED",out.name if record else out.with_suffix(".json").name,"score",result["score"],"peak_ball_vx",kick_peak_speed,flush=True)
 
 
 def main():
@@ -242,6 +253,7 @@ def main():
     parser.add_argument("--ball-y",type=float,default=0)
     parser.add_argument("--ball-ys",nargs="+",type=float)
     parser.add_argument("--fps",type=int,choices=[25,50],default=25)
+    parser.add_argument("--no-video",action="store_true")
     parser.add_argument("--wide",action="store_true")
     parser.add_argument("--side",action="store_true")
     parser.add_argument("--dual-view",action="store_true",help="Record simultaneous wide/side footage from one physics rollout")
@@ -260,12 +272,12 @@ def main():
     recovery=torch.jit.load(str(ROOT/"models"/f"{args.recovery_model}.pt"),map_location=str(gs.device)).eval() if args.recovery_model else None
     if args.ball_ys:
         for i,y in enumerate(args.ball_ys):
-            play(env,network,f"{args.name}_{i+1:02d}",args.mass,args.aim_y,args.swing_time,y,args.fps,args.wide,args.side,args.stage,recovery,args.handover,args.save_states,args.recovery_model,args.dual_view)
+            play(env,network,f"{args.name}_{i+1:02d}",args.mass,args.aim_y,args.swing_time,y,args.fps,args.wide,args.side,args.stage,recovery,args.handover,args.save_states,args.recovery_model,args.dual_view,record=not args.no_video)
     elif args.aim_ys:
         for i,aim in enumerate(args.aim_ys):
-            play(env,network,f"{args.name}_{i+1:02d}",args.mass,aim,args.swing_time,args.ball_y,args.fps,args.wide,args.side,args.stage,recovery,args.handover,args.save_states,args.recovery_model,args.dual_view)
+            play(env,network,f"{args.name}_{i+1:02d}",args.mass,aim,args.swing_time,args.ball_y,args.fps,args.wide,args.side,args.stage,recovery,args.handover,args.save_states,args.recovery_model,args.dual_view,record=not args.no_video)
     else:
-        play(env,network,args.name,args.mass,args.aim_y,args.swing_time,args.ball_y,args.fps,args.wide,args.side,args.stage,recovery,args.handover,args.save_states,args.recovery_model,args.dual_view)
+        play(env,network,args.name,args.mass,args.aim_y,args.swing_time,args.ball_y,args.fps,args.wide,args.side,args.stage,recovery,args.handover,args.save_states,args.recovery_model,args.dual_view,record=not args.no_video)
     gs.destroy()
 
 

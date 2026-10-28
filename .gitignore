@@ -31,4 +31,7 @@ videos/*
 
 !videos/kick_earlier_handover.json
 !videos/kick_recovery_balance_0200.json
+!videos/kick_vision_final_*.mp4
+!videos/kick_vision_final_*.json
 output/*.zip
+publish/

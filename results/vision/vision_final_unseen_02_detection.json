@@ -1,0 +1,19 @@
+{
+  "position": [
+    0.819,
+    0.012,
+    0.13999998569488525
+  ],
+  "pixel_centroid": [
+    312.2555243069506,
+    237.32261952591404
+  ],
+  "surface_points": 2269,
+  "sphere_fit_rms_m": 0.00012429147807534202,
+  "depth_sphere_center": [
+    0.8199084519652707,
+    0.013664591304183682,
+    0.1406579230457252
+  ],
+  "source": "RGB ellipse center + calibrated ground-plane projection, RGB-D sphere validation, 1mm quantization; no object ID or true position"
+}

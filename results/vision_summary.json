@@ -1,0 +1,182 @@
+{
+  "method": "fixed calibrated RGB-D camera; RGB ellipse and known ball-center plane; depth validation; no ground-truth ball position in control",
+  "assumptions": [
+    "orange ball radius 0.12 m",
+    "flat floor top z=0.02 m",
+    "fixed camera calibration",
+    "ball stationary until kick",
+    "single initial detection"
+  ],
+  "trials": [
+    {
+      "name": "vision_final_grid_01",
+      "group": "grid",
+      "dx_m": -0.04,
+      "dy_m": -0.04,
+      "detected": true,
+      "detection_error_mm": 2.5463115953444408e-06,
+      "kicked": true,
+      "standing": true,
+      "pins": 3,
+      "max_tilt_deg": 8.09914493560791,
+      "video": "videos/kick_vision_final_grid_01.mp4"
+    },
+    {
+      "name": "vision_final_grid_02",
+      "group": "grid",
+      "dx_m": -0.04,
+      "dy_m": 0,
+      "detected": true,
+      "detection_error_mm": 2.3841858487472223e-06,
+      "kicked": true,
+      "standing": true,
+      "pins": 5,
+      "max_tilt_deg": 7.397362232208252,
+      "video": "videos/kick_vision_final_grid_02.mp4"
+    },
+    {
+      "name": "vision_final_grid_03",
+      "group": "grid",
+      "dx_m": -0.04,
+      "dy_m": 0.04,
+      "detected": true,
+      "detection_error_mm": 2.5463115953444408e-06,
+      "kicked": true,
+      "standing": true,
+      "pins": 4,
+      "max_tilt_deg": 6.624000549316406,
+      "video": "videos/kick_vision_final_grid_03.mp4"
+    },
+    {
+      "name": "vision_final_grid_04",
+      "group": "grid",
+      "dx_m": 0.0,
+      "dy_m": -0.04,
+      "detected": true,
+      "detection_error_mm": 2.3858615849333973e-05,
+      "kicked": true,
+      "standing": true,
+      "pins": 4,
+      "max_tilt_deg": 8.09914493560791,
+      "video": "videos/kick_vision_final_grid_04.mp4"
+    },
+    {
+      "name": "vision_final_grid_05",
+      "group": "grid",
+      "dx_m": 0.0,
+      "dy_m": 0,
+      "detected": true,
+      "detection_error_mm": 2.384185793236071e-05,
+      "kicked": true,
+      "standing": true,
+      "pins": 6,
+      "max_tilt_deg": 7.397362232208252,
+      "video": "videos/kick_vision_final_grid_05.mp4"
+    },
+    {
+      "name": "vision_final_grid_06",
+      "group": "grid",
+      "dx_m": 0.0,
+      "dy_m": 0.04,
+      "detected": true,
+      "detection_error_mm": 2.3858615849333973e-05,
+      "kicked": true,
+      "standing": true,
+      "pins": 6,
+      "max_tilt_deg": 6.624000549316406,
+      "video": "videos/kick_vision_final_grid_06.mp4"
+    },
+    {
+      "name": "vision_final_grid_07",
+      "group": "grid",
+      "dx_m": 0.04,
+      "dy_m": -0.04,
+      "detected": true,
+      "detection_error_mm": 1.4333027205000788e-05,
+      "kicked": true,
+      "standing": true,
+      "pins": 4,
+      "max_tilt_deg": 8.09914493560791,
+      "video": "videos/kick_vision_final_grid_07.mp4"
+    },
+    {
+      "name": "vision_final_grid_08",
+      "group": "grid",
+      "dx_m": 0.04,
+      "dy_m": 0,
+      "detected": true,
+      "detection_error_mm": 1.4305114759416426e-05,
+      "kicked": true,
+      "standing": true,
+      "pins": 4,
+      "max_tilt_deg": 7.397362232208252,
+      "video": "videos/kick_vision_final_grid_08.mp4"
+    },
+    {
+      "name": "vision_final_grid_09",
+      "group": "grid",
+      "dx_m": 0.04,
+      "dy_m": 0.04,
+      "detected": true,
+      "detection_error_mm": 1.4333027205000788e-05,
+      "kicked": true,
+      "standing": true,
+      "pins": 3,
+      "max_tilt_deg": 6.624000549316406,
+      "video": "videos/kick_vision_final_grid_09.mp4"
+    },
+    {
+      "name": "vision_final_unseen_01",
+      "group": "unseen",
+      "dx_m": 0.0173,
+      "dy_m": -0.0234,
+      "detected": true,
+      "detection_error_mm": 0.6708278304307284,
+      "kicked": true,
+      "standing": true,
+      "pins": 3,
+      "max_tilt_deg": 6.875276565551758,
+      "video": "videos/kick_vision_final_unseen_01.mp4"
+    },
+    {
+      "name": "vision_final_unseen_02",
+      "group": "unseen",
+      "dx_m": -0.0306,
+      "dy_m": 0.0122,
+      "detected": true,
+      "detection_error_mm": 0.44720843090531814,
+      "kicked": true,
+      "standing": true,
+      "pins": 4,
+      "max_tilt_deg": 7.474305152893066,
+      "video": "videos/kick_vision_final_unseen_02.mp4"
+    },
+    {
+      "name": "vision_final_unseen_03",
+      "group": "unseen",
+      "dx_m": 0.0264,
+      "dy_m": 0.0327,
+      "detected": true,
+      "detection_error_mm": 0.5000101924561233,
+      "kicked": true,
+      "standing": true,
+      "pins": 3,
+      "max_tilt_deg": 7.229338645935059,
+      "video": "videos/kick_vision_final_unseen_03.mp4"
+    }
+  ],
+  "grid": {
+    "trials": 9,
+    "detected": 9,
+    "kick_and_stand": 9,
+    "all_six": 2,
+    "max_detection_error_mm": 2.3858615849333973e-05
+  },
+  "unseen": {
+    "trials": 3,
+    "detected": 3,
+    "kick_and_stand": 3,
+    "all_six": 0,
+    "max_detection_error_mm": 0.6708278304307284
+  }
+}

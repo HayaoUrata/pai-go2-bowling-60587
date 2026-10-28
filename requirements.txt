@@ -11,3 +11,4 @@ imageio==2.38.1
 imageio-ffmpeg==0.6.0
 reportlab==4.4.9
 opencv-python==5.0.0.93
+scipy==1.18.1

@@ -21,7 +21,7 @@ def gs_rand(lower, upper, batch_shape):
 
 class Go2Env:
     def __init__(self, num_envs, env_cfg, obs_cfg, reward_cfg, command_cfg,
-                 show_viewer=False, camera_res=None, auto_reset=True, push_max=0.0, with_ball=False, bowling=False, bowling_ball_radius=0.16):
+                 show_viewer=False, camera_res=None, auto_reset=True, push_max=0.0, with_ball=False, bowling=False, bowling_ball_radius=0.16, vision_camera_res=(320,180)):
         self.num_envs: int = num_envs
         self.num_actions = env_cfg["num_actions"]
         self.cfg = env_cfg
@@ -115,7 +115,7 @@ class Go2Env:
             self.camera = self.scene.add_camera(res=camera_res, pos=(2.0, -2.0, 1.2),
                                                 lookat=(0.0, 0.0, 0.3), fov=45, GUI=False, debug=True)
             if bowling:
-                self.robot_camera = self.scene.add_camera(res=(320,180),pos=(1,-1,1),lookat=(0,0,.2),fov=50,GUI=False,debug=True)
+                self.robot_camera = self.scene.add_camera(res=vision_camera_res,pos=(1,-1,1),lookat=(0,0,.2),fov=50,GUI=False,debug=True)
         self.scene.build(n_envs=num_envs)
         if self.ball is not None:
             self.ball.set_mass(0.50 if bowling else 10.0)
