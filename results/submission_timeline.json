@@ -1,0 +1,61 @@
+{
+  "duration_s": 168.4,
+  "segments": [
+    {
+      "source": "PAI最終課題_60587.mp4",
+      "source_start_s": 0,
+      "source_end_s": 16.4,
+      "start_s": 0,
+      "end_s": 16.4
+    },
+    {
+      "source": "PAI最終課題_60587.mp4",
+      "source_start_s": 19.4,
+      "source_end_s": 29.4,
+      "start_s": 16.4,
+      "end_s": 26.4
+    },
+    {
+      "source": "PAI最終課題_60587.mp4",
+      "source_start_s": 31.4,
+      "source_end_s": 41.4,
+      "start_s": 26.4,
+      "end_s": 36.4
+    },
+    {
+      "source": "PAI最終課題_60587.mp4",
+      "source_start_s": 43.4,
+      "source_end_s": 85.4,
+      "start_s": 36.4,
+      "end_s": 78.4
+    },
+    {
+      "source": "PAI最終課題_60587_画像認識版.mp4",
+      "source_start_s": 0,
+      "source_end_s": 82,
+      "start_s": 78.4,
+      "end_s": 160.4
+    },
+    {
+      "source": "PAI最終課題_60587_画像認識版.mp4",
+      "source_start_s": 82,
+      "source_end_s": 90,
+      "start_s": 160.4,
+      "end_s": 168.4
+    }
+  ],
+  "chapters": [
+    {
+      "start_s": 0,
+      "title": "歩行とキックの4段階比較"
+    },
+    {
+      "start_s": 78.4,
+      "title": "カメラ検出と位置ずれの実験"
+    },
+    {
+      "start_s": 160.4,
+      "title": "全体の結果"
+    }
+  ]
+}

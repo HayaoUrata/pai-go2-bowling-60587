@@ -5,7 +5,7 @@ Unitree Go2が、学習済みの歩行で球へ近づき、停止・体重移動
 **確認結果：完成版の撮影で6/6本。終了時まで立位を維持。**
 これは固定条件での再現確認であり、異なる球位置に対する成功率を示すものではありません。
 
-[実演動画](output/video/PAI最終課題_60587.mp4) · [画像認識版の動画](output/video/PAI最終課題_60587_画像認識版.mp4) · [説明資料](output/pdf/説明資料_PAI最終課題_60587.pdf)
+[提出用の統合動画（2分48.4秒）](output/video/PAI最終課題_60587_統合版.mp4) · [説明資料](output/pdf/説明資料_PAI最終課題_60587.pdf)
 
 ![投球後の様子](results/bowling_strike.png)
 
@@ -77,16 +77,20 @@ Actor/Criticは512→256→128のMLP（ELU）。1024並列環境×24ステップ
 
 ```bash
 .venv/bin/python edit_bowling.py
+.venv/bin/python edit_vision.py
+.venv/bin/python combine_submission.py
 .venv/bin/python make_report.py
 ```
 
 `edit_bowling.py`は同梱の撮影素材を編集し、日本語説明音声をmacOSのKyoko音声で生成します。
 動画は歩行学習前・歩行のみ・キック試作・追加学習後の完成の4段階を同じ配置・全景カメラで比較し、完成版の横視点リプレイ → 全景の結果確認の順に構成します。横視点リプレイだけ1/4倍速と画面に明記し、それ以外は等速です。
 
+統合版は2分48.4秒です。前半に4段階比較、後半にカメラ検出と位置ずれの実験、最後に全体の結果を収めています。YouTubeにはこの1本をタイトル `PAI最終課題_60587` で掲載します。
+
 提出用ファイル：
 
-- `output/video/PAI最終課題_60587.mp4`
-- `output/video/PAI最終課題_60587.srt`
+- `output/video/PAI最終課題_60587_統合版.mp4`
+- `output/video/PAI最終課題_60587_統合版.srt`
 - `output/pdf/説明資料_PAI最終課題_60587.pdf`
 
 ## 主なファイル
@@ -162,4 +166,4 @@ Actor/Criticは512→256→128のMLP（ELU）。1024並列環境×24ステップ
 
 未使用の3位置で位置推定誤差は最大0.67 mmでした。仮想カメラにはノイズを加えておらず、色・形状・床面・照明・校正を固定した条件です。実カメラでの精度、遮蔽や別の色の球への対応、動いている球の追跡は未検証です。
 
-画像認識版の動画は `output/video/PAI最終課題_60587_画像認識版.mp4` です。既知座標を使う元の提出動画も残しています。
+個別の編集素材として、[4段階比較（92.4秒）](output/video/PAI最終課題_60587.mp4) と [画像認識版（90秒）](output/video/PAI最終課題_60587_画像認識版.mp4) も残しています。提出には両方をまとめた統合版を使用します。同梱の2本から `python combine_submission.py` で統合動画を再生成できます。

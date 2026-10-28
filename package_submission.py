@@ -20,7 +20,11 @@ def main():
            'output/pdf/説明資料_PAI最終課題_60587.pdf','output/video/PAI最終課題_60587.srt']
     for n in ['untrained_comparison','walk_only','unstable','final_wide','final_side','stable_wide','stable_side']:
         names += [f'videos/kick_{n}.{ext}' for ext in ['mp4','json']]
-    names += ['vision_bowling.py','summarize_vision.py','edit_vision.py',
+    names += ['combine_submission.py','results/submission_timeline.json',
+              'output/video/PAI最終課題_60587.mp4',
+              'output/video/PAI最終課題_60587_統合版.mp4',
+              'output/video/PAI最終課題_60587_統合版.srt',
+              'vision_bowling.py','summarize_vision.py','edit_vision.py',
               'results/vision_summary.json','results/vision_tuning_results.json',
               'output/video/PAI最終課題_60587_画像認識版.mp4']
     names += [str(p.relative_to(ROOT)) for p in sorted((ROOT/'videos').glob('kick_vision_final_*')) if p.suffix in ['.mp4','.json']]

@@ -98,10 +98,10 @@ def main():
         p('応用先として考えているのは、床上の軽い物を足で押して位置を直すような作業である。その場合も、物の手前で止まり、片足を上げて接触し、最後に姿勢を戻す必要がある。今回は球を対象に、この流れをシミュレーションで試した。'),
         p('カメラで位置を求める別版では、球をずらしても蹴れたが、全ピンが倒れるとは限らなかった。対象の形や重さを変えた場合はまだ調べていない。実際の作業に使うには、実カメラでの検出、接触力の管理、実機での確認が必要になる。現状では、歩行から物体への接触に移るときの失敗と修正を比べる教材として使うことを考えている。'),
         p('表現力',HEAD),
-        p('成功した投球だけでは変更点が分かりにくいため、動画には歩行の学習前、歩行のみ、転倒した試作、完成版を入れた。比較する場面は同じ全景で撮影した。足の動きは横から1/4倍速で見せ、最後に全景へ戻して本数と姿勢を確認する構成にした。'),
+        p('成功した投球だけでは変更点が分かりにくいため、動画には歩行の学習前、歩行のみ、転倒した試作、完成版を入れた。比較する場面は同じ全景で撮影した。足の動きは横から1/4倍速で見せ、全景へ戻して本数と姿勢を確認する。後半にはカメラによる位置検出と位置ずれ時の投球を示し、最後に全体の結果をまとめた。'),
         p('7. 実行環境・コード・参考資料',HEAD),
         p('Apple M5 Pro（16コアGPU、24 GBメモリ）でMetal／MPSを使用した。Python 3.12、Genesis 1.4.5、PyTorch 2.9.1、rsl-rl 5.5.1で動作を確認した。',SMALL),
-        p('実行手順はREADME.mdに記載した。kick_bowling.pyがタスク実行、train_recovery.pyが復帰用方策の学習を担当する。歩行方策はmodels/locomotion.pt、復帰用方策はmodels/recovery.ptに保存した。提出動画は1分32.4秒で、全景と横視点は同じエピソードから録画している。',SMALL),
+        p('実行手順はREADME.mdに記載した。kick_bowling.pyがタスク実行、train_recovery.pyが復帰用方策の学習を担当する。歩行方策はmodels/locomotion.pt、復帰用方策はmodels/recovery.ptに保存した。提出動画は2分48.4秒の統合版で、前半に4段階比較、後半にカメラ検出と位置ずれの実験を収めた。前半の全景と横視点は同じエピソードから録画している。',SMALL),
         p('歩行環境はGenesisの公式例を基にした。原本とApache-2.0ライセンスはvendor/、変更点はTHIRD_PARTY.mdに記載した。',SMALL),
         p('<link href="https://genesis-world.readthedocs.io/en/v1.4.5/user_guide/policy_training/examples/locomotion.html" color="#333333">[1] Genesis World, Go2 locomotion example</link><br/><link href="https://github.com/leggedrobotics/rsl_rl" color="#333333">[2] rsl-rl（PPO実装、BSD-3-Clause）</link>',SMALL),
     ]
@@ -123,7 +123,7 @@ def main():
     story += [table(rows,[173,130,100,100]),Spacer(1,7),
         Image(str(ROOT/'results/vision/vision_final_grid_06_detection.png'),width=240,height=180),
         p('図2　カメラ画像から検出した球。緑枠が画像処理の検出領域。',CAPTION),
-        p('位置を変えても球には当たったが、6本すべて倒せたのは12試行中2回だった。球の位置が分かることと、狙いどおりに蹴れることは分けて改善する必要がある。今回のカメラ画像にはノイズを加えていない。球の色・半径、床の高さ、照明、カメラ位置も固定しており、実カメラで同じ精度が出るかは未確認である。動画と全12試行の記録はGitHubに保存した。',SMALL)]
+        p('位置を変えても球には当たったが、6本すべて倒せたのは12試行中2回だった。球の位置が分かることと、狙いどおりに蹴れることは分けて改善する必要がある。今回のカメラ画像にはノイズを加えていない。球の色・半径、床の高さ、照明、カメラ位置も固定しており、実カメラで同じ精度が出るかは未確認である。統合動画の後半に代表例を収め、全12試行の記録もGitHubに保存した。',SMALL)]
     path=OUT/'説明資料_PAI最終課題_60587.pdf'
     SimpleDocTemplate(str(path),pagesize=A4,leftMargin=46,rightMargin=46,topMargin=39,bottomMargin=48,title='4脚ロボットでボウリング',author='60587').build(story,onFirstPage=footer,onLaterPages=footer)
     print('REPORT_SAVED',path)
