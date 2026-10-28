@@ -1,0 +1,67 @@
+{
+  "model": "locomotion.pt",
+  "policy": "PPO MLP 45 -> 512 -> 256 -> 128 -> 12 (ELU)",
+  "training_seed": 1,
+  "iterations": 750,
+  "parallel_environments": 1024,
+  "rollout_steps": 24,
+  "phases": [
+    {
+      "iterations": 100,
+      "task": "forward walking"
+    },
+    {
+      "iterations": 150,
+      "task": "random lateral push, max 100 N for 0.20 s"
+    },
+    {
+      "iterations": 500,
+      "task": "variable speed, lateral motion, yaw and stop; max 40 N pushes"
+    }
+  ],
+  "inference": "Actor only; critic used in training",
+  "kick": "Analytic IK/PD trajectory; PPO walking/stop and separately fine-tuned PPO post-kick recovery",
+  "robot": "Unitree Go2 from Genesis bundled assets",
+  "comparison": {
+    "untrained_model": "untrained.pt",
+    "untrained_updates": 0,
+    "trained_model": "locomotion.pt",
+    "trained_iterations": 750,
+    "learning_scope": "Walking/stop and post-kick standing; foot swing trajectory designed with IK/PD",
+    "approach_timeout_s": 6
+  },
+  "four_stage_comparison": {
+    "walking_before": "untrained.pt, 0 optimizer updates",
+    "walking_only": "locomotion.pt, stage=walk-only",
+    "prototype_kick": "locomotion.pt, stage=unstable, no dedicated support control",
+    "completed_kick": "locomotion.pt walking, IK/PD support and foot swing, recovery.pt for post-kick standing",
+    "scope": "Stages 2-4 share the same 750-iteration walking policy. These are controller ablations, not four training checkpoints."
+  },
+  "recovery": {
+    "model": "recovery.pt",
+    "source_model": "recovery_balance_0200.pt",
+    "initial_walking_iterations": 750,
+    "additional_iterations": 350,
+    "additional_phases": [
+      150,
+      200
+    ],
+    "parallel_environments": 512,
+    "rollout_steps": 24,
+    "additional_transitions": 4300800,
+    "handover_after_kick_start_s": 1.5,
+    "blend_s": 0.3,
+    "aim_y": 0,
+    "swing_time_s": 0.16,
+    "seed": 2,
+    "reset_pose_count": 79,
+    "selection_note": "Selected from measured bowling trials for six pins, standing, and low post-kick tilt; same fixed scene, not a general success rate.",
+    "final_measurement": {
+      "score": 6,
+      "max_tilt_deg": 7.397362232208252,
+      "final_tilt_deg": 0.28246787190437317,
+      "standing_at_end": true
+    },
+    "training_iterations_executed": 450
+  }
+}

@@ -1,0 +1,90 @@
+[
+  {
+    "file": "videos/kick_final_wide.json",
+    "score": 6,
+    "standing": true,
+    "peak_tilt_deg": 20.437044143676758,
+    "recovery_peak_tilt_deg": 20.437044143676758,
+    "final_tilt_deg": 0.850882887840271,
+    "last_5s_mean_tilt_deg": 1.1671479856967926,
+    "learned_recovery": null,
+    "handover_s": null
+  },
+  {
+    "file": "videos/kick_earlier_handover.json",
+    "score": 5,
+    "standing": true,
+    "peak_tilt_deg": 7.397362232208252,
+    "recovery_peak_tilt_deg": 1.9900151491165161,
+    "final_tilt_deg": 1.9900151491165161,
+    "last_5s_mean_tilt_deg": 1.8681346797943115,
+    "learned_recovery": null,
+    "handover_s": 1.5
+  },
+  {
+    "file": "videos/kick_recovery_0050.json",
+    "score": 6,
+    "standing": true,
+    "peak_tilt_deg": 7.397362232208252,
+    "recovery_peak_tilt_deg": 5.365416049957275,
+    "final_tilt_deg": 4.627079010009766,
+    "last_5s_mean_tilt_deg": 3.6946933097839354,
+    "learned_recovery": null,
+    "handover_s": 1.5
+  },
+  {
+    "file": "videos/kick_recovery_0100.json",
+    "score": 6,
+    "standing": true,
+    "peak_tilt_deg": 7.397362232208252,
+    "recovery_peak_tilt_deg": 3.535327196121216,
+    "final_tilt_deg": 3.535327196121216,
+    "last_5s_mean_tilt_deg": 3.173277160644531,
+    "learned_recovery": "recovery_0100",
+    "handover_s": 1.5
+  },
+  {
+    "file": "videos/kick_recovery_0150.json",
+    "score": 5,
+    "standing": true,
+    "peak_tilt_deg": 7.397362232208252,
+    "recovery_peak_tilt_deg": 2.4024429321289062,
+    "final_tilt_deg": 1.484866738319397,
+    "last_5s_mean_tilt_deg": 1.0424116411209106,
+    "learned_recovery": "recovery_0150",
+    "handover_s": 1.5
+  },
+  {
+    "file": "videos/kick_recovery_balance_0100.json",
+    "score": 5,
+    "standing": true,
+    "peak_tilt_deg": 7.397362232208252,
+    "recovery_peak_tilt_deg": 2.386002540588379,
+    "final_tilt_deg": 0.6636886596679688,
+    "last_5s_mean_tilt_deg": 0.47047046256065367,
+    "learned_recovery": "recovery_balance_0100",
+    "handover_s": 1.5
+  },
+  {
+    "file": "videos/kick_recovery_balance_0200.json",
+    "score": 6,
+    "standing": true,
+    "peak_tilt_deg": 7.397362232208252,
+    "recovery_peak_tilt_deg": 1.701352596282959,
+    "final_tilt_deg": 0.28482043743133545,
+    "last_5s_mean_tilt_deg": 0.5110639073848724,
+    "learned_recovery": "recovery_balance_0200",
+    "handover_s": 1.5
+  },
+  {
+    "file": "videos/kick_recovery_baseline.json",
+    "score": 6,
+    "standing": true,
+    "peak_tilt_deg": 20.37416648864746,
+    "recovery_peak_tilt_deg": 20.37416648864746,
+    "final_tilt_deg": 0.849902331829071,
+    "last_5s_mean_tilt_deg": 1.168745241165161,
+    "learned_recovery": null,
+    "handover_s": null
+  }
+]

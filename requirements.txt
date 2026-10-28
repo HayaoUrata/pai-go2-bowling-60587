@@ -1,0 +1,13 @@
+genesis-world==1.4.5
+torch==2.9.1
+rsl-rl-lib==5.5.1
+tensordict==0.10.0
+numpy==2.5.4
+mujoco==3.17.0
+Pillow==11.3.0
+matplotlib==3.11.2
+tensorboard==2.21.0
+imageio==2.38.1
+imageio-ffmpeg==0.6.0
+reportlab==4.4.9
+opencv-python==5.0.0.93

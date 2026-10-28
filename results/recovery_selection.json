@@ -1,0 +1,27 @@
+{
+  "model": "recovery.pt",
+  "source_model": "recovery_balance_0200.pt",
+  "initial_walking_iterations": 750,
+  "additional_iterations": 350,
+  "additional_phases": [
+    150,
+    200
+  ],
+  "parallel_environments": 512,
+  "rollout_steps": 24,
+  "additional_transitions": 4300800,
+  "handover_after_kick_start_s": 1.5,
+  "blend_s": 0.3,
+  "aim_y": 0,
+  "swing_time_s": 0.16,
+  "seed": 2,
+  "reset_pose_count": 79,
+  "selection_note": "Selected from measured bowling trials for six pins, standing, and low post-kick tilt; same fixed scene, not a general success rate.",
+  "final_measurement": {
+    "score": 6,
+    "max_tilt_deg": 7.397362232208252,
+    "final_tilt_deg": 0.28246787190437317,
+    "standing_at_end": true
+  },
+  "training_iterations_executed": 450
+}
